@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, non_constant_identifier_names
 import 'package:calcugasliter/Auth/signup/model/signup_model.dart';
 import 'package:calcugasliter/Auth/verify_otp/view/verify_otp.dart';
+import 'package:calcugasliter/Core/home/view/home.dart';
 import 'package:calcugasliter/screens/settings.dart';
 import 'package:calcugasliter/services/api_service.dart';
 import 'package:calcugasliter/utils/loader.dart';
@@ -44,9 +45,9 @@ class UpdatePasswordController extends GetxController {
 
   @override
   void onClose() {
-    oldpasswordController.dispose();
-    newpasswordController.dispose();
-    confirmPasswordController.dispose();
+    oldpasswordController.clear();
+    newpasswordController.clear();
+    confirmPasswordController.clear();
   }
 
   void checkUpdatePassword() async {
@@ -57,24 +58,27 @@ class UpdatePasswordController extends GetxController {
     } else {
       showLoading();
       ConnectivityManager? _connectivityManager = ConnectivityManager();
-
       if (await _connectivityManager.isInternetConnected()) {
         updatePasswordFormKey.currentState!.save();
         print('form Valid');
         final Map<String, dynamic> data = <String, dynamic>{};
         data['old_password'] = oldpassword;
         data['new_password'] = confirmPassword;
-        Logger().i(data);
         var response = await ApiService.put(
             NetworkStrings.updatePasswordEndPoint, data, true);
         var body = jsonDecode(response.body);
         if (response.statusCode == 200 && body["status"] == 1) {
           stopLoading();
           customSnackBar("Password updated Successfully");
-          Get.off(Settings());
+          onClose();
+          Get.offAll(const Home());
+        } else if (response.statusCode == 400) {
+          print(response.body);
+          stopLoading();
+          customSnackBar('Old password is wrong');
         } else {
           stopLoading();
-          customSnackBar(body['msg']);
+          customSnackBar(body['message']);
         }
       } else {
         stopLoading();

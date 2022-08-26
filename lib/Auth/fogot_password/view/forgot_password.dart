@@ -13,7 +13,7 @@ import '../../../utils/routes.dart';
 import '../../../widgets/center_logo.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/simple_button.dart';
-
+bool isForget  =false;
 class ForgotPassword extends StatelessWidget {
    ForgotPassword({Key? key}) : super(key: key);
    final controller = Get.put(ForgotPasswordController());
@@ -55,6 +55,7 @@ class ForgotPassword extends StatelessWidget {
                   button_color: AppColors.blackColor,
                   button_label: AppStrings.getCode.toUpperCase(),
                   onButtonPressed: () {
+                    isForget =true;
                     controller.checkEmail();
                   },
                 ),

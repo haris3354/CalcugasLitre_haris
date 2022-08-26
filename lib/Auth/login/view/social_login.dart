@@ -126,7 +126,7 @@ _googleSignUp() async {
 
       print(response.body);
       print(dataInJson);
-      if ((response.statusCode == 200) && (dataInJson['status'] == 1)) {
+      if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
         stopLoading();
         var obj = SocialLoginResponse.fromJson(dataInJson);
         if (obj.user?.verified == 1) {
@@ -149,6 +149,8 @@ _googleSignUp() async {
           log.w(box.read('token'));
           Get.offAll(const Home());
         } else {}
+      } else if (response.statusCode == NetworkStrings.UNAUTHORIZED_CODE) {
+        Get.offAll(const Home());
       } else {
         stopLoading();
         customSnackBar(dataInJson['msg']);
@@ -159,7 +161,6 @@ _googleSignUp() async {
       customSnackBar('No Internet Connection');
     }
   } catch (e) {
-    Get.offAll(const Home());
     // customSnackBar(e.toString());
   }
 }

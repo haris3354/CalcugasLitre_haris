@@ -51,13 +51,22 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                   ),
                   width: double.infinity,
                   height: 500.h,
-                  child: Text(
-                    (contentController.data?[0].content) ?? 'Loading...',
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color: AppColors.whiteColor,
-                    ),
+                  child: Obx(
+                    () => (contentController.isLoading.value)
+                        ? Text(
+                            (contentController.data?[0].content) ??
+                                'Loading...',
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              color: AppColors.whiteColor,
+                            ),
+                          )
+                        : const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ),
                 SizedBox(height: 30.h),

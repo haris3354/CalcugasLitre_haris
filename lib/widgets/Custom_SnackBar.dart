@@ -1,16 +1,24 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar_controller.dart';
-import 'package:get/get_utils/get_utils.dart';
+// ignore_for_file: file_names
 
-SnackbarController customSnackBar(String message) => Get.snackbar(
-      "",
-      message,
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+SnackbarController customSnackBar(String message) => Get.rawSnackbar(
+      padding: const EdgeInsets.all(20),
+      borderRadius: 50,
       duration: 2.seconds,
+      margin: const EdgeInsets.all(15),
+      messageText: Center(
+          child: Text(
+        message,
+        style: TextStyle(
+          fontSize: 15.sp,
+          color: Colors.red,
+          fontWeight: FontWeight.bold,
+        ),
+      )),
       snackPosition: SnackPosition.BOTTOM,
       isDismissible: true,
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
+      backgroundColor: Colors.white,
     );

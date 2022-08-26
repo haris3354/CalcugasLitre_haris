@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, invalid_use_of_protected_member
 import 'package:calcugasliter/Auth/profile/controller/update_profile_controller.dart';
 import 'package:calcugasliter/Core/Add_Car/view/add_car.dart';
 import 'package:calcugasliter/Core/AllCars/controller/allcars_conroller.dart';
@@ -7,11 +7,12 @@ import 'package:calcugasliter/Core/update_Car/update_car.dart';
 import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/asset_path.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
+import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
+import 'package:calcugasliter/widgets/custom_text.dart';
 import 'package:calcugasliter/widgets/shimmer_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
 import '../../../services/api_service.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_drawer.dart';
@@ -26,21 +27,60 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final AllCarsController carController = Get.put(AllCarsController());
   Future _dismissSlidableItem(BuildContext context, int index) async {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['car_id'] = carController.carList[index].id;
-    var response =
-        await ApiService.delete(NetworkStrings.deleteCarEndPoint, data);
-    debugPrint(response.statusCode.toString());
-    if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
-      carController.carList.removeAt(index);
-      // carController.carList.refresh();
-    }
+    Get.defaultDialog(
+      titleStyle: TextStyle(
+        color: Colors.white,
+      ),
+      backgroundColor: Colors.black,
+      title: 'Do you want to delete ${carController.carList[index].carName} ',
+      //content: Text(''),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'No',
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final Map<String, dynamic> data = <String, dynamic>{};
+                data['car_id'] = carController.carList[index].id;
+                var response = await ApiService.delete(
+                    NetworkStrings.deleteCarEndPoint, data);
+                debugPrint(response.statusCode.toString());
+                if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+                  carController.carList.removeAt(index);
+                  customSnackBar('Car Deleted');
+                }
+              },
+              child: Text(
+                'Delete',
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final controller1 = Get.put(updateProfileController());
-    //  final carController = Get.put(AllCarsController());
+
     return Container(
       constraints: BoxConstraints.expand(),
       decoration: const BoxDecoration(
@@ -73,27 +113,35 @@ class _HomeState extends State<Home> {
               Expanded(
                 child: Obx(
                   () => (carController.isloading.value)
-                      ? ListView.separated(
-                          separatorBuilder: (context, index) {
-                            return SizedBox(height: 7.h);
-                          },
-                          itemCount: carController.carList.length,
-                          itemBuilder: (context2, index) {
-                            return SlidableWidget(
-                              onEdit: () => Get.to(
-                                UpdateCar(carController.carList[index]),
+                      ? carController.carList.isNotEmpty
+                          ? ListView.separated(
+                              separatorBuilder: (context, index) {
+                                return SizedBox(height: 7.h);
+                              },
+                              itemCount: carController.carList.length,
+                              itemBuilder: (context2, index) {
+                                return SlidableWidget(
+                                  onEdit: () => Get.to(
+                                    UpdateCar(carController.carList[index]),
+                                  ),
+                                  onDismissed: () =>
+                                      _dismissSlidableItem(context, index),
+                                  child: carListTile(
+                                    context,
+                                    carController.carList[index].carName!,
+                                    carController.carList[index].carImage!,
+                                    carController.carList[index],
+                                  ),
+                                );
+                              },
+                            )
+                          : Center(
+                              child: CustomText(
+                                text: 'No Cars Added',
+                                fontSize: 25.sp,
+                                color: Colors.white,
                               ),
-                              onDismissed: () =>
-                                  _dismissSlidableItem(context, index),
-                              child: carListTile(
-                                context,
-                                carController.carList[index].carName!,
-                                carController.carList[index].carImage!,
-                                carController.carList[index],
-                              ),
-                            );
-                          },
-                        )
+                            )
                       : shimmerListView(),
                 ),
               ),
@@ -120,7 +168,7 @@ Widget _customFloatingActionButton(BuildContext context) => GestureDetector(
     );
 
 shimmerListView() => ListView.separated(
-      itemCount: 4,
+      itemCount: 2,
       itemBuilder: (context2, index) {
         return ShimmerListTile();
         //);

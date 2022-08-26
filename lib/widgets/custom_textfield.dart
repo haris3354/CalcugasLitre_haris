@@ -53,42 +53,45 @@ class _CustomTextfieldState extends State<CustomTextfield> {
           ),
           height: 50.h,
         ),
-        TextFormField(
-          readOnly: widget.isReadOnly,
-          initialValue: widget.initialVal,
-          textAlign: widget.isCenterText ? TextAlign.center : TextAlign.left,
-          keyboardType: widget.fieldType,
-          validator: widget.fieldValidator,
-          obscureText: widget.isPasswordField!,
-          controller: widget.textController,
-          onSaved: widget.onSaved,
-          style: TextStyle(
-            fontSize: 15.sp,
-            color: AppColors.whiteColor,
-          ),
-          decoration: InputDecoration(
-            suffixIcon: widget.isSuffixIcon ?? false
-                ? IconButton(
-                    icon: Icon(
-                      isvisible ? Icons.visibility_off : Icons.visibility,
-                      color: Theme.of(context).primaryColorDark,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        isvisible = !isvisible;
-                        widget.isPasswordField = !(widget.isPasswordField)!;
-                      });
-                    },
-                  )
-                : null,
-            contentPadding:
-                EdgeInsets.only(top: 10.h, left: 10.w, bottom: 10.h),
-            border: InputBorder.none,
-            hintText: widget.hint_Text,
-            errorStyle: const TextStyle(color: Colors.orangeAccent),
-            hintStyle: TextStyle(
-              color: AppColors.dimWhiteColor,
+        Padding(
+          padding: const EdgeInsets.only(top: 3.0),
+          child: TextFormField(
+            readOnly: widget.isReadOnly,
+            initialValue: widget.initialVal,
+            textAlign: widget.isCenterText ? TextAlign.center : TextAlign.left,
+            keyboardType: widget.fieldType,
+            validator: widget.fieldValidator,
+            obscureText: widget.isPasswordField!,
+            controller: widget.textController,
+            onSaved: widget.onSaved,
+            style: TextStyle(
               fontSize: 15.sp,
+              color: AppColors.whiteColor,
+            ),
+            decoration: InputDecoration(
+              suffixIcon: widget.isSuffixIcon ?? false
+                  ? IconButton(
+                      icon: Icon(
+                        isvisible ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isvisible = !isvisible;
+                          widget.isPasswordField = !(widget.isPasswordField)!;
+                        });
+                      },
+                    )
+                  : null,
+              contentPadding:
+                  EdgeInsets.only(top: 10.h, left: 10.w, bottom: 10.h),
+              border: InputBorder.none,
+              hintText: widget.hint_Text,
+              errorStyle: const TextStyle(color: Colors.orangeAccent),
+              hintStyle: TextStyle(
+                color: AppColors.dimWhiteColor,
+                fontSize: 15.sp,
+              ),
             ),
           ),
         ),

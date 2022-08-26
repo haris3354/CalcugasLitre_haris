@@ -4,6 +4,7 @@ import 'package:calcugasliter/Core/AllCars/model/allcars_model.dart';
 import 'package:calcugasliter/Core/fuel/add_fuel/controller/get_fuel_controller.dart';
 import 'package:calcugasliter/Core/fuel/add_fuel/view/add_fuel.dart';
 import 'package:calcugasliter/Core/home/widgets/car_list_tile.dart';
+import 'package:calcugasliter/Core/update_Car/update_car.dart';
 import 'package:calcugasliter/widgets/custom_appbar.dart';
 import 'package:calcugasliter/widgets/shimmer_table.dart';
 import 'package:calcugasliter/widgets/simple_button.dart';
@@ -43,38 +44,48 @@ class _CarDetailsState extends State<CarDetails> {
                     ),
                     height: 100.h,
                     color: AppColors.blackColor,
-                    child: ListView.builder(
-                      itemCount: getfuelsController.carFuels.length,
-                      itemBuilder: (BuildContext context, int index) => Table(
-                        defaultVerticalAlignment:
-                            TableCellVerticalAlignment.top,
-                        children: [
-                          TableRow(
-                            decoration: BoxDecoration(),
-                            children: [
-                              CustomText(
-                                text: '\$ ' +
-                                    getfuelsController.carFuels[index].fuelPrice
-                                        .toString(),
-                                fontSize: 15.sp,
-                              ),
-                              CustomText(
-                                text: getfuelsController
-                                    .carFuels[index].fuelQuantity
-                                    .toString(),
-                                fontSize: 15.sp,
-                              ),
-                              CustomText(
-                                text: getfuelsController
-                                    .carFuels[index].createdAt!
-                                    .substring(0, 10),
-                                fontSize: 15.sp,
-                              ),
-                            ],
+                    child: getfuelsController.carFuels.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: getfuelsController.carFuels.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                Table(
+                              defaultVerticalAlignment:
+                                  TableCellVerticalAlignment.top,
+                              children: [
+                                TableRow(
+                                  decoration: BoxDecoration(),
+                                  children: [
+                                    CustomText(
+                                      text: '\$ ' +
+                                          getfuelsController
+                                              .carFuels[index].fuelPrice
+                                              .toString(),
+                                      fontSize: 15.sp,
+                                    ),
+                                    CustomText(
+                                      text: getfuelsController
+                                          .carFuels[index].fuelQuantity
+                                          .toString(),
+                                      fontSize: 15.sp,
+                                    ),
+                                    CustomText(
+                                      text: getfuelsController
+                                          .carFuels[index].createdAt!
+                                          .substring(0, 10),
+                                      fontSize: 15.sp,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        : Center(
+                            child: CustomText(
+                              color: Colors.white,
+                              fontSize: 20.sp,
+                              text: 'No Fuels Added',
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
                   ),
                 ],
               ),
@@ -125,14 +136,17 @@ class _CarDetailsState extends State<CarDetails> {
                     fontSize: 15.sp,
                     color: AppColors.whiteColor,
                   ),
-                  trailing: Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                    color: Colors.red,
-                    child: CustomText(
-                      text: AppStrings.edit,
-                      fontSize: 15.sp,
-                      color: AppColors.whiteColor,
+                  trailing: GestureDetector(
+                    onTap: () => Get.off(UpdateCar(widget.carDetails)),
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                      color: Colors.red,
+                      child: CustomText(
+                        text: AppStrings.edit,
+                        fontSize: 15.sp,
+                        color: AppColors.whiteColor,
+                      ),
                     ),
                   ),
                 ),
@@ -152,11 +166,7 @@ class _CarDetailsState extends State<CarDetails> {
                 SizedBox(height: 10.h),
                 tableHeader(),
                 _fuelsTable(),
-                // if (getfuelsController.isloading.value) ...[
-                //   _fuelsTable(),
-                // ] else ...[
-                //   shimmerTable(),
-                // ],
+
                 SizedBox(height: 10.h),
 
                 SimpleButton(

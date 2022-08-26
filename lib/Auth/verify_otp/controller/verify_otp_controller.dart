@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, non_constant_identifier_names, prefer_const_constructors, curly_braces_in_flow_control_structures
 import 'dart:async';
 import 'package:calcugasliter/Auth/Reset_password/view/change_password.dart';
+import 'package:calcugasliter/Auth/fogot_password/view/forgot_password.dart';
 import 'package:calcugasliter/Auth/login/controller/login_controller.dart';
 import 'package:calcugasliter/Auth/login/view/login.dart';
 import 'package:calcugasliter/Auth/profile/controller/update_profile_controller.dart';
@@ -61,11 +62,15 @@ class VerifyOtpController extends GetxController {
         var response =
             await ApiService.post(NetworkStrings.verifyOtpEndpoint, data);
         print(response.body);
-
         var body = jsonDecode(response.body);
         if (response.statusCode == 200) {
           var obj = VerifyOtpResponseModel.fromJson(body);
-          if (obj.data?.verified == 1) {
+          if (isForget == true) {
+            stopLoading();
+            isForget = false;
+            customSnackBar(body['message']);
+            Get.off(ResetPassword(), arguments: [args[0]]);
+          } else if (obj.data?.verified == 1) {
             stopLoading();
             Get.offAll(Home());
             box.write('token', obj.data?.userAuthentication);
@@ -77,10 +82,6 @@ class VerifyOtpController extends GetxController {
             box.write('email', obj.data?.userEmail);
             box.write('image', obj.data?.image);
             customSnackBar(body['message']);
-          } else {
-            stopLoading();
-            customSnackBar(body['message']);
-            Get.off(ResetPassword(), arguments: [args[0]]);
           }
         } else {
           stopLoading();

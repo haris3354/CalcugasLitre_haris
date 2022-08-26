@@ -47,9 +47,9 @@ class NetworkStrings {
 
   //---------- API MESSAGES ------------------//
 
-  static const int API_SUCCESS_STATUS = 1;
-  static const int EMAIL_UNVERIFIED = 0;
-  static const int EMAIL_VERIFIED = 1;
-  static const int PROFILE_INCOMPLETED = 0;
-  static const int PROFILE_COMPLETED = 1;
+  // static const int API_SUCCESS_STATUS = 1;
+  // static const int EMAIL_UNVERIFIED = 0;
+  // static const int EMAIL_VERIFIED = 1;
+  // static const int PROFILE_INCOMPLETED = 0;
+  // static const int PROFILE_COMPLETED = 1;
 }

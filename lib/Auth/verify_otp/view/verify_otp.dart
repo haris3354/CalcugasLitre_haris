@@ -27,7 +27,6 @@ class VerifyOtp extends StatelessWidget {
             key: controller.verifyOtpFormKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
-              //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 120.h),
                 CenterLogo(

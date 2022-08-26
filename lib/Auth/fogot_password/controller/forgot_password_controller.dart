@@ -49,8 +49,7 @@ class ForgotPasswordController extends GetxController {
       final Map<String, dynamic> data = <String, dynamic>{};
       data['user_email'] = email;
 
-      var response =
-          await ApiService.post(NetworkStrings.forgotPasswordEndpoint, data);
+      var response =await ApiService.post(NetworkStrings.forgotPasswordEndpoint, data);
       var body = jsonDecode(response.body);
       Logger().i(body);
       if (response.statusCode == 200) {

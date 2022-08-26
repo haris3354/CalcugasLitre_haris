@@ -10,6 +10,7 @@ import 'package:calcugasliter/utils/app_colors.dart';
 import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/asset_path.dart';
 import 'package:calcugasliter/utils/field_validators.dart';
+import 'package:calcugasliter/utils/image_cropper.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
@@ -34,6 +35,7 @@ Logger log = Logger();
 
 class _EditProfileState extends State<EditProfile> {
   File? image;
+  File? cropImage;
   TextEditingController cc = TextEditingController();
   final editcontroller = Get.find<updateProfileController>();
 
@@ -41,14 +43,23 @@ class _EditProfileState extends State<EditProfile> {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
-      final tempImage = File(image.path);
-      setState(() => this.image = tempImage);
+      var tempImg = File(image.path);
+      cropImage = await cropGivenImage(image.path);
+      if (cropImage != null) {
+        setState(
+          () => this.image = cropImage,
+        );
+      } else {
+        setState(() {
+          this.image = tempImg;
+        });
+      }
     } on PlatformException catch (_) {
       customSnackBar('Failed to load Image');
     }
   }
 
-  Future<void> uploadImage(String val) async {
+  Future<void> updateProfile(String val) async {
     showLoading();
     var token = box.read('token');
     Map<String, String> header = {"Authorization": 'Bearer $token'};
@@ -128,10 +139,6 @@ class _EditProfileState extends State<EditProfile> {
                                 errorWidget: (context, url, error) =>
                                     const Icon(Icons.error),
                               ),
-                        // Image.network(
-                        //     editcontroller.image,
-                        //     fit: BoxFit.cover,
-                        //   ),
                       ),
                       Positioned(
                         right: -5,
@@ -192,9 +199,7 @@ class _EditProfileState extends State<EditProfile> {
                     button_color: AppColors.blackColor,
                     button_label: AppStrings.continuee.toUpperCase(),
                     onButtonPressed: () {
-                      // editcontroller.updateProfile();
-                      // controller.name = editcontroller.name;
-                      uploadImage(cc.text);
+                      updateProfile(cc.text);
                     },
                   ),
                 ],

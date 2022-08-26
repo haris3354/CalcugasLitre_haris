@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return GetMaterialApp(
           builder: BotToastInit(),
-          navigatorObservers: [BotToastNavigatorObserver()],        
+          navigatorObservers: [BotToastNavigatorObserver()],
           theme: ThemeData(fontFamily: "RussoOne"),
           title: 'CalcuGasLitre',
           debugShowCheckedModeBanner: false,
@@ -44,10 +44,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// List<GetPage> pagesList = [
-//   GetPage(name: Routes.loginRoute, page: () => Login()),
-// ];
 
 class MyHttpOverrides extends HttpOverrides {
   @override

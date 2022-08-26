@@ -44,7 +44,8 @@ Widget customDrawer(
                             width: 50.w,
                             height: 50.h,
                             fit: BoxFit.fill,
-                            placeholder: (context, url) => shimmerAvatar(),
+                            placeholder: (context, url) =>
+                                shimmerAvatar(50.w, 50.h),
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.error),
                           ),
@@ -96,12 +97,10 @@ Widget customDrawer(
             Get.back();
             Get.to(const Calendar());
           }, null),
-          _customDrawerPage(context, AssetPath.card, 'Card', () {}, null),
           _customDrawerPage(context, AssetPath.settings, 'Settings', () {
             //   Navigator.pop(context);
             Get.back();
             Get.to(const Settings());
-            //  Navigator.pushNamed(context, Routes.settings);
           }, null),
         ],
       ),
@@ -127,12 +126,12 @@ Widget _customDrawerPage(BuildContext context, String imagePath,
   );
 }
 
-Widget shimmerAvatar() => Shimmer.fromColors(
+Widget shimmerAvatar(double width, double height) => Shimmer.fromColors(
       baseColor: AppColors.baseColor,
       highlightColor: AppColors.highlightColor,
       child: Container(
-        width: 50.w,
-        height: 50.h,
+        width: width,
+        height: height,
         color: Colors.black,
       ),
     );

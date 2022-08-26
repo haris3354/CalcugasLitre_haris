@@ -3,7 +3,6 @@
 import 'package:calcugasliter/Auth/reset_password/controller/reset_password_controller.dart';
 import 'package:calcugasliter/widgets/background_image_widget.dart';
 import 'package:calcugasliter/widgets/custom_textfield.dart';
-import 'package:calcugasliter/widgets/link_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -12,7 +11,6 @@ import 'package:get/get_state_manager/src/simple/get_view.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/app_strings.dart';
 import '../../../utils/field_validators.dart';
-import '../../../utils/routes.dart';
 import '../../../widgets/center_logo.dart';
 import '../../../widgets/simple_button.dart';
 

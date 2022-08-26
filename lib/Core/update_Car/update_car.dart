@@ -1,11 +1,14 @@
-// ignore_for_file: must_be_immutable
-
+// ignore_for_file: must_be_immutable, body_might_complete_normally_nullable, unused_local_variable
 import 'dart:io';
-import 'package:calcugasliter/Core/Add_Car/controller/car_controller.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:calcugasliter/Core/Add_Car/controller/Addcar_controller.dart';
+import 'package:calcugasliter/Core/Add_Car/controller/updateCar_controller.dart';
 import 'package:calcugasliter/Core/AllCars/model/allcars_model.dart';
+import 'package:calcugasliter/Core/home/widgets/custom_drawer.dart';
 import 'package:calcugasliter/utils/app_colors.dart';
 import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/field_validators.dart';
+import 'package:calcugasliter/utils/image_cropper.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
 import 'package:calcugasliter/widgets/background_image_widget.dart';
@@ -18,6 +21,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:logger/logger.dart';
+
+Logger logger = Logger();
 
 class UpdateCar extends StatefulWidget {
   Cars carDetails;
@@ -27,16 +33,21 @@ class UpdateCar extends StatefulWidget {
 }
 
 class _UpdateCarState extends State<UpdateCar> {
-  final updateCarController = Get.put(CarController());
+  final updateCarController = Get.put(UpdateCarController());
   File? image;
+  File? cropImage;
+
   Future pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
-      final tempImage = File(image.path);
-      setState(
-        () => this.image = tempImage,
-      );
+      var tempImage = File(image.path);
+      cropImage = await cropGivenImage(image.path);
+      if (cropImage != null) {
+        setState(
+          () => this.image = cropImage,
+        );
+      }
     } on PlatformException catch (_) {
       customSnackBar('Failed to load Image');
     }
@@ -77,32 +88,32 @@ class _UpdateCarState extends State<UpdateCar> {
             height: 130.h,
             width: double.infinity,
             child: DottedBorder(
+              padding: const EdgeInsets.all(0),
               color: AppColors.whiteColor.withOpacity(0.5),
               child: SizedBox(
                 width: double.infinity,
-                height: 125.h,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  // crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (image != null) ...[
-                      SizedBox(
-                        width: 300.h,
-                        height: 125,
-                        child: Image.file(
-                          image!,
-                          //height: 125.h,
-                        ),
+                      Image.file(
+                        fit: BoxFit.fill,
+                        width: 300.w,
+                        image!,
+                        height: 130.h,
                       ),
                     ] else ...[
-                      Image(
-                        width: 300.h,
-                        height: 125,
-                        image: NetworkImage(
-                          NetworkStrings.imageBaseUrl +
-                              widget.carDetails.carImage!,
-                        ),
+                      CachedNetworkImage(
+                        imageUrl: NetworkStrings.imageBaseUrl +
+                            widget.carDetails.carImage!,
+                        fit: BoxFit.fill,
+                        width: 300.w,
+                        height: 130.h,
+                        placeholder: (context, url) =>
+                            shimmerAvatar(300.w, 130.h),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ],
                   ],
@@ -173,8 +184,7 @@ class _UpdateCarState extends State<UpdateCar> {
                   button_label: 'Edit Car',
                   onButtonPressed: () {
                     updateCarController.updateCar(
-                        image?.path ?? widget.carDetails.carImage!,
-                        widget.carDetails.id!);
+                        image?.path, widget.carDetails.id!);
                   },
                 ),
               ],

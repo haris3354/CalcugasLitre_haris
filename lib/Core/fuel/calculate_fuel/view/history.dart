@@ -39,30 +39,39 @@ class _HistoryState extends State<History> {
               Expanded(
                 child: Obx(
                   () => historyController.isloading.value
-                      ? ListView.separated(
-                          itemCount: historyController.historyFuels.length,
-                          itemBuilder: (context2, index) {
-                            int reverseIndex =
-                                historyController.historyFuels.length -
-                                    1 -
-                                    index;
-                            return _historylistTile(
-                              historyController
-                                  .historyFuels[reverseIndex].fromdate!
-                                  .substring(0, 10),
-                              historyController
-                                  .historyFuels[reverseIndex].todate!
-                                  .substring(0, 10),
-                              historyController
-                                  .historyFuels[reverseIndex].totalQty!,
-                              historyController
-                                  .historyFuels[reverseIndex].totalPrice!,
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Divider(height: 10.h);
-                          },
-                        )
+                      ? (historyController.historyFuels.isNotEmpty)
+                          ? ListView.separated(
+                              itemCount: historyController.historyFuels.length,
+                              itemBuilder: (context2, index) {
+                                int reverseIndex =
+                                    historyController.historyFuels.length -
+                                        1 -
+                                        index;
+                                return _historylistTile(
+                                  historyController
+                                      .historyFuels[reverseIndex].fromdate!
+                                      .substring(0, 10),
+                                  historyController
+                                      .historyFuels[reverseIndex].todate!
+                                      .substring(0, 10),
+                                  historyController
+                                      .historyFuels[reverseIndex].totalQty!,
+                                  historyController
+                                      .historyFuels[reverseIndex].totalPrice!,
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return Divider(height: 10.h);
+                              },
+                            )
+                          : Center(
+                              child: CustomText(
+                                text: 'No History',
+                                fontSize: 20.sp,
+                                color: Colors.white,
+                              ),
+                            )
                       : shimmerListView(),
                 ),
               ),

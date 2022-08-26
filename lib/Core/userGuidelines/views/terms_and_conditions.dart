@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 import 'package:calcugasliter/Core/userGuidelines/guidelines_controller.dart';
 import 'package:calcugasliter/Core/userGuidelines/views/privacy_policy.dart';
+import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/custom_appbar.dart';
 import 'package:calcugasliter/widgets/simple_button.dart';
@@ -52,13 +53,22 @@ class _TermsAndConditionState extends State<TermsAndCondition> {
                   ),
                   width: double.infinity,
                   height: 500.h,
-                  child: Text(
-                    (contentController.data?[0].content) ?? 'Loading...',
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color: AppColors.whiteColor,
-                    ),
+                  child: Obx(
+                    () => (contentController.isLoading.value)
+                        ? Text(
+                            (contentController.data?[0].content) ??
+                                'Loading...',
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              color: AppColors.whiteColor,
+                            ),
+                          )
+                        : Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ),
                 SizedBox(height: 30.h),
@@ -77,3 +87,5 @@ class _TermsAndConditionState extends State<TermsAndCondition> {
     });
   }
 }
+
+class ShowLoader {}

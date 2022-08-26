@@ -1,4 +1,6 @@
 // ignore_for_file: must_be_immutable
+import 'dart:ui';
+
 import 'package:calcugasliter/utils/asset_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,7 +17,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: Builder(
         builder: (BuildContext context) => GestureDetector(
           child: const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(6.0),
             child: Image(
               image: AssetImage(AssetPath.back),
             ),
@@ -26,8 +28,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: trailing,
       centerTitle: true,
       title: Padding(
-        padding: EdgeInsets.all(6.w),
-        child: Text(title.toUpperCase()),
+        padding: EdgeInsets.all(3.w),
+        child: Text(
+          title.toUpperCase(),
+          style: TextStyle(
+            overflow: TextOverflow.visible,
+            fontSize: 20.sp,
+          ),
+        ),
       ),
       elevation: 0,
       backgroundColor: Colors.transparent,

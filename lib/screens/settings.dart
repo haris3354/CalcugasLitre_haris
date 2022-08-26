@@ -42,7 +42,7 @@ class _SettingsState extends State<Settings> {
         padding: EdgeInsets.symmetric(horizontal: 10.h),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: CustomAppBar(title: AppStrings.addFuel),
+          appBar: CustomAppBar(title: AppStrings.settings),
           body: Column(
             children: [
               SimpleButton(
@@ -102,4 +102,3 @@ void logout() async {
     customSnackBar(body['message']);
   }
 }
-

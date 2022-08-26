@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingWidget extends StatelessWidget {
+  const LoadingWidget({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return  const SpinKitFadingCircle(
+    return const SpinKitSpinningLines(
       duration: Duration(milliseconds: 1000),
-      color: Colors.red,
+      color: Colors.white,
       size: 50.0,
     );
   }
@@ -15,7 +17,8 @@ class LoadingWidget extends StatelessWidget {
 
 showLoading() {
   BotToast.showCustomLoading(toastBuilder: (close) {
-    return LoadingWidget();
+    Alignment.bottomRight;
+    return const LoadingWidget();
   });
 }
 

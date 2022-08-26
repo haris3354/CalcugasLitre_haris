@@ -65,6 +65,8 @@ class UpdatePassword extends GetView<UpdatePasswordController> {
                     }),
                 SizedBox(height: 7.h),
                 CustomTextfield(
+                  isSuffixIcon: true,
+                  isPasswordField: true,
                   hint_Text: AppStrings.confirmPassword,
                   onSaved: (value) {
                     controller.confirmPassword = value!;
