@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, invalid_use_of_protected_member
+import 'dart:io';
+
 import 'package:calcugasliter/Auth/profile/controller/update_profile_controller.dart';
 import 'package:calcugasliter/Core/Add_Car/view/add_car.dart';
 import 'package:calcugasliter/Core/AllCars/controller/allcars_conroller.dart';
@@ -79,7 +81,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final controller1 = Get.put(updateProfileController());
+    //   final controller1 = Get.put(updateProfileController());
 
     return Container(
       constraints: BoxConstraints.expand(),
@@ -89,66 +91,85 @@ class _HomeState extends State<Home> {
           fit: BoxFit.cover,
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        drawer: GetBuilder<updateProfileController>(
-          builder: (controller) => customDrawer(
-              context, controller1.name, controller1.image, controller1.email),
-        ),
-        appBar: customAppBar(context),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 18.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppStrings.myCars.toUpperCase(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 21.sp,
-                ),
+      child: WillPopScope(
+        onWillPop: () async => await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Are you sure you want to quit?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('cancel'),
+                onPressed: () => Get.back(),
               ),
-              SizedBox(height: 10.h),
-              Expanded(
-                child: Obx(
-                  () => (carController.isloading.value)
-                      ? carController.carList.isNotEmpty
-                          ? ListView.separated(
-                              separatorBuilder: (context, index) {
-                                return SizedBox(height: 7.h);
-                              },
-                              itemCount: carController.carList.length,
-                              itemBuilder: (context2, index) {
-                                return SlidableWidget(
-                                  onEdit: () => Get.to(
-                                    UpdateCar(carController.carList[index]),
-                                  ),
-                                  onDismissed: () =>
-                                      _dismissSlidableItem(context, index),
-                                  child: carListTile(
-                                    context,
-                                    carController.carList[index].carName!,
-                                    carController.carList[index].carImage!,
-                                    carController.carList[index],
-                                  ),
-                                );
-                              },
-                            )
-                          : Center(
-                              child: CustomText(
-                                text: 'No Cars Added',
-                                fontSize: 25.sp,
-                                color: Colors.white,
-                              ),
-                            )
-                      : shimmerListView(),
-                ),
+              TextButton(
+                child: Text('Exit'),
+                onPressed: () => exit(0),
               ),
             ],
           ),
         ),
-        floatingActionButton: _customFloatingActionButton(context),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          drawer: GetBuilder<updateProfileController>(
+            init: updateProfileController(),
+            builder: (controller) => customDrawer(
+                context, controller.name, controller.image, controller.email),
+          ),
+          appBar: customAppBar(context),
+          body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 18.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppStrings.myCars.toUpperCase(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 21.sp,
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Expanded(
+                  child: Obx(
+                    () => (carController.isloading.value)
+                        ? carController.carList.isNotEmpty
+                            ? ListView.separated(
+                                separatorBuilder: (context, index) {
+                                  return SizedBox(height: 7.h);
+                                },
+                                itemCount: carController.carList.length,
+                                itemBuilder: (context2, index) {
+                                  return SlidableWidget(
+                                    onEdit: () => Get.to(
+                                      UpdateCar(carController.carList[index]),
+                                    ),
+                                    onDismissed: () =>
+                                        _dismissSlidableItem(context, index),
+                                    child: carListTile(
+                                      context,
+                                      carController.carList[index].carName!,
+                                      carController.carList[index].carImage!,
+                                      carController.carList[index],
+                                    ),
+                                  );
+                                },
+                              )
+                            : Center(
+                                child: CustomText(
+                                  text: 'No Cars Added',
+                                  fontSize: 25.sp,
+                                  color: Colors.white,
+                                ),
+                              )
+                        : shimmerListView(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          floatingActionButton: _customFloatingActionButton(context),
+        ),
       ),
     );
   }

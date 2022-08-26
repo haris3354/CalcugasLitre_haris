@@ -25,7 +25,7 @@ class ResetPasswordController extends GetxController {
       var response =
           await ApiService.put(NetworkStrings.logoutEndPoint, data, true);
       var body = jsonDecode(response.body);
-      if (response.statusCode == 200) {
+      if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
         stopLoading();
         box.remove('token');
         box.remove('name');
@@ -35,7 +35,9 @@ class ResetPasswordController extends GetxController {
           box.remove('isSocial');
         }
         Logger().i(body);
-        Get.offAll(const LoginMethod ());
+        Get.offAll(const LoginMethod());
+      } else if (response.statusCode == NetworkStrings.UNAUTHORIZED_CODE) {
+        Get.offAll(const LoginMethod());
       } else {
         stopLoading();
         customSnackBar(body['message']);

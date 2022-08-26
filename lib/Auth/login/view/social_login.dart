@@ -102,13 +102,11 @@ _googleSignUp() async {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       final GoogleSignInAuthentication? googleAuth =
           await googleUser?.authentication;
-
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
       final user = (await _auth.signInWithCredential(credential)).user;
-
       Map<String, dynamic> socialLoginData = {
         "user_social_token": googleUser?.id.toString(),
         "user_social_type": "Google",
@@ -123,9 +121,9 @@ _googleSignUp() async {
           NetworkStrings.socialLoginEndpoint, socialLoginData);
       log.i("Response Of API : ${response.body}");
       var dataInJson = jsonDecode(response.body);
-
+      Logger().e(response.statusCode);
+      print('------------------------- Response ${response.statusCode}');
       print(response.body);
-      print(dataInJson);
       if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
         stopLoading();
         var obj = SocialLoginResponse.fromJson(dataInJson);
@@ -136,21 +134,21 @@ _googleSignUp() async {
           box.write('name', obj.user?.fullName ?? user?.displayName);
           box.write('email', user?.email);
           if (obj.user?.image != null) {
-            box.write('image', obj.user?.image);
+            box.write(
+                'image',
+                obj.user?.image ??
+                    "https://cdn-icons-png.flaticon.com/512/147/147144.png");
           }
           if (obj.user?.image == null) {
             box.write('image',
                 "https://cdn-icons-png.flaticon.com/512/147/147144.png");
           }
-          controller.setFields(
-              obj.user?.fullName, obj.user?.image, user?.email!);
+          controller.setFields(user?.displayName, obj.user?.image, user?.email);
           customSnackBar("Login SucessFully");
           isVerified = true;
           log.w(box.read('token'));
           Get.offAll(const Home());
         } else {}
-      } else if (response.statusCode == NetworkStrings.UNAUTHORIZED_CODE) {
-        Get.offAll(const Home());
       } else {
         stopLoading();
         customSnackBar(dataInJson['msg']);
@@ -161,6 +159,6 @@ _googleSignUp() async {
       customSnackBar('No Internet Connection');
     }
   } catch (e) {
-    // customSnackBar(e.toString());
+    customSnackBar(e.toString());
   }
 }

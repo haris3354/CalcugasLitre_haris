@@ -45,12 +45,12 @@ class _SettingsState extends State<Settings> {
           appBar: CustomAppBar(title: AppStrings.settings),
           body: Column(
             children: [
-              SimpleButton(
-                  button_color: AppColors.blackColor,
-                  button_label: AppStrings.subscription,
-                  onButtonPressed: () {
-                    Get.to(Subscription());
-                  }),
+              // SimpleButton(
+              //     button_color: AppColors.blackColor,
+              //     button_label: AppStrings.subscription,
+              //     onButtonPressed: () {
+              //       Get.to(Subscription());
+              //     }),
               if (box.read('isSocial') == null)
                 SimpleButton(
                     button_color: AppColors.blackColor,
