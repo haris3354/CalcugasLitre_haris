@@ -45,6 +45,11 @@ class NetworkStrings {
 
   static const int UNAUTHORIZED_CODE = 401;
 
+//--------------------Defgault ----------------
+
+  static const String defaultAvatar = "https://cdn-icons-png.flaticon.com/512/147/147144.png";
+
+
   //---------- API MESSAGES ------------------//
 
   // static const int API_SUCCESS_STATUS = 1;

@@ -1,7 +1,7 @@
+import 'package:calcugasliter/Auth/login/view/social_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import '../Auth/login/view/login.dart';
 import '../Core/userGuidelines/views/terms_and_conditions.dart';
 import '../Core/userGuidelines/views/privacy_policy.dart';
@@ -10,17 +10,18 @@ import 'Custom_SnackBar.dart';
 import 'custom_text.dart';
 import 'link_widget.dart';
 
-class CustomDialog extends StatefulWidget {
-  const CustomDialog({Key? key}) : super(key: key);
+class AgreementDialog extends StatefulWidget {
+  final int index;
+  AgreementDialog({Key? key, required this.index}) : super(key: key);
 
   @override
-  State<CustomDialog> createState() => _CustomDialogState();
+  State<AgreementDialog> createState() => _AgreementDialogState();
 }
 
 bool check1 = false;
 bool check2 = false;
 
-class _CustomDialogState extends State<CustomDialog> {
+class _AgreementDialogState extends State<AgreementDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -59,7 +60,7 @@ class _CustomDialogState extends State<CustomDialog> {
                 color: AppColors.blackColor,
                 text: 'Terms and Conditions',
                 onButtonPressed: () {
-                  Get.to(TermsAndCondition());
+                  Get.to(const TermsAndCondition());
                 },
               ),
             ],
@@ -79,7 +80,7 @@ class _CustomDialogState extends State<CustomDialog> {
                 color: AppColors.blackColor,
                 text: 'Privacy Policy',
                 onButtonPressed: () {
-                  Get.to(PrivacyPolicy());
+                  Get.to(const PrivacyPolicy());
                 },
               ),
             ],
@@ -114,7 +115,9 @@ class _CustomDialogState extends State<CustomDialog> {
                     if (check1 == true && check2 == true) {
                       check1 = false;
                       check2 = false;
-                      Get.off(Login());
+                      (widget.index == 1)
+                          ? Get.off(Login())
+                          : Get.off(SocialLogin());
                     } else if (check1 == false && check2 == true) {
                       customSnackBar('Check Terms and Conditions to proceed');
                     } else if (check1 == true && check2 == false) {
@@ -142,4 +145,21 @@ class _CustomDialogState extends State<CustomDialog> {
       ),
     );
   }
+}
+
+void scaleDialog(BuildContext context, int index) {
+  showGeneralDialog(
+    context: context,
+    pageBuilder: (ctx, a1, a2) {
+      return Container();
+    },
+    transitionBuilder: (ctx, a1, a2, child) {
+      var curve = Curves.easeInOut.transform(a1.value);
+      return Transform.scale(
+        scale: curve,
+        child: AgreementDialog(index: index),
+      );
+    },
+    transitionDuration: const Duration(milliseconds: 300),
+  );
 }

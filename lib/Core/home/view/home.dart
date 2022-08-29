@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, invalid_use_of_protected_member
 import 'dart:io';
-
+import 'package:calcugasliter/widgets/Exit_Confirmation.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:calcugasliter/Auth/profile/controller/update_profile_controller.dart';
 import 'package:calcugasliter/Core/Add_Car/view/add_car.dart';
 import 'package:calcugasliter/Core/AllCars/controller/allcars_conroller.dart';
@@ -28,61 +29,75 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final AllCarsController carController = Get.put(AllCarsController());
+
   Future _dismissSlidableItem(BuildContext context, int index) async {
-    Get.defaultDialog(
-      titleStyle: TextStyle(
-        color: Colors.white,
-      ),
-      backgroundColor: Colors.black,
-      title: 'Do you want to delete ${carController.carList[index].carName} ',
-      //content: Text(''),
-      actions: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                'No',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  color: Colors.white,
-                ),
-              ),
+    showAnimatedDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.black,
+          title: Text(
+            'Do you want to delete ${carController.carList[index].carName}',
+            style: TextStyle(color: Colors.white),
+          ),
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.all(
+              Radius.circular(12.0),
             ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
-                final Map<String, dynamic> data = <String, dynamic>{};
-                data['car_id'] = carController.carList[index].id;
-                var response = await ApiService.delete(
-                    NetworkStrings.deleteCarEndPoint, data);
-                debugPrint(response.statusCode.toString());
-                if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
-                  carController.carList.removeAt(index);
-                  customSnackBar('Car Deleted');
-                }
-              },
-              child: Text(
-                'Delete',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+          ),
+          content: Builder(
+            builder: (context) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'No',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      final Map<String, dynamic> data = <String, dynamic>{};
+                      data['car_id'] = carController.carList[index].id;
+                      var response = await ApiService.delete(
+                          NetworkStrings.deleteCarEndPoint, data);
+                      if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+                        carController.carList.removeAt(index);
+                        customSnackBar('Car Deleted');
+                      }
+                    },
+                    child: Text(
+                      'Delete',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+      animationType: DialogTransitionType.scale,
+      curve: Curves.linear,
+      duration: Duration(seconds: 1),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    //   final controller1 = Get.put(updateProfileController());
-
     return Container(
       constraints: BoxConstraints.expand(),
       decoration: const BoxDecoration(
@@ -94,19 +109,7 @@ class _HomeState extends State<Home> {
       child: WillPopScope(
         onWillPop: () async => await showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Are you sure you want to quit?'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('cancel'),
-                onPressed: () => Get.back(),
-              ),
-              TextButton(
-                child: Text('Exit'),
-                onPressed: () => exit(0),
-              ),
-            ],
-          ),
+          builder: (context) => exitConfirmationDialog(context),
         ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -135,6 +138,7 @@ class _HomeState extends State<Home> {
                     () => (carController.isloading.value)
                         ? carController.carList.isNotEmpty
                             ? ListView.separated(
+                                physics: BouncingScrollPhysics(),
                                 separatorBuilder: (context, index) {
                                   return SizedBox(height: 7.h);
                                 },
@@ -157,7 +161,7 @@ class _HomeState extends State<Home> {
                               )
                             : Center(
                                 child: CustomText(
-                                  text: 'No Cars Added',
+                                  text: AppStrings.noCarsAdded,
                                   fontSize: 25.sp,
                                   color: Colors.white,
                                 ),

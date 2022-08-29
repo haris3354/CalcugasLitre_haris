@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'package:calcugasliter/Core/stats/stats_model.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../services/api_service.dart';
 import '../../utils/network_strings.dart';
@@ -46,23 +45,17 @@ class StatsController extends GetxController {
     var response = await ApiService.getApi(NetworkStrings.getByMonth);
     var body = jsonDecode(response.body);
     if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
-      debugPrint(response.statusCode.toString());
       var obj = StatsModel.fromJson(body);
       fuels.value = obj.fuel!;
-      debugPrint('------------ STATS List ---------------- ');
-      debugPrint(fuels.value.length.toString());
       for (int i = 0; i < fuels.value.length; i++) {
         if (max < fuels[i].sum!.toDouble()) {
           max = fuels[i].sum!.toDouble();
         }
-        debugPrint('Index $i');
         data.add(ChartData(months[i], fuels[i].sum!.toDouble()));
       }
       isLoading = true;
       update();
-      // print(data);
     } else {
-      debugPrint(response.statusCode.toString());
       customSnackBar(body['message']);
     }
   }

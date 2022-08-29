@@ -5,7 +5,6 @@ import 'package:logger/logger.dart';
 
 class ApiService {
   static final client = http.Client();
-
   static Uri _buildUrl(String endpoint) {
     final apiPath = NetworkStrings.apiBaseUrl + endpoint;
     return Uri.parse(apiPath);
@@ -17,6 +16,19 @@ class ApiService {
       _buildUrl(endpoint),
       body: body,
     );
+    //  try {
+//     var response = await request
+//         .close()
+//         .then(
+//           (_) => print('Got eventual response'),
+//         )
+//         .timeout(
+//           const Duration(seconds: 1),
+//         );
+//   } on TimeoutException catch (_) {
+//     print('Timed out');
+//     request.abort();
+//   }
     return response;
   }
   //--------------put-------------------------------------------------

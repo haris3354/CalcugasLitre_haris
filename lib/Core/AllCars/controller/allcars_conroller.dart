@@ -5,7 +5,6 @@ import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import '../model/allcars_model.dart';
 
 class AllCarsController extends GetxController {
@@ -21,16 +20,13 @@ class AllCarsController extends GetxController {
     isloading(false);
     var response = await ApiService.getApi(NetworkStrings.allCars);
     var body = jsonDecode(response.body);
-    Logger().i(body);
     if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
       debugPrint(response.statusCode.toString());
       var obj = AllCarsResponseModel.fromJson(body);
       carList.value = obj.cars!;
       isloading(true);
-      print(isloading.value);
     } else {
       stopLoading();
-      debugPrint(response.statusCode.toString());
       customSnackBar(body['message']);
     }
   }

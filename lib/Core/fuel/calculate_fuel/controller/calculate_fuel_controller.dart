@@ -6,16 +6,12 @@ import 'package:calcugasliter/services/connectivity_manager.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 
 class CalculateFuel extends GetxController {
   RxBool isloading = false.obs;
   var totalPrice = 0.obs;
   var totalQuantity = 0.obs;
-
-
 
   void calculateFuel(String fromDate, String toDate) async {
     isloading(false);

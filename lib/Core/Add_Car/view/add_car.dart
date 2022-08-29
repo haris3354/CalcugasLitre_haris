@@ -5,6 +5,7 @@ import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/asset_path.dart';
 import 'package:calcugasliter/utils/field_validators.dart';
 import 'package:calcugasliter/utils/image_cropper.dart';
+import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
 import 'package:calcugasliter/widgets/background_image_widget.dart';
 import 'package:calcugasliter/widgets/center_logo.dart';
@@ -30,14 +31,12 @@ class _AddCarState extends State<AddCar> {
     addCarController.carNumberController.clear();
     addCarController.modelNumberController.clear();
     addCarController.addCarFormKey.currentState?.dispose();
-
     super.dispose();
   }
 
   final addCarController = Get.put(AddCarController());
   File? image;
   File? cropImage;
-
   Future pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
@@ -54,7 +53,7 @@ class _AddCarState extends State<AddCar> {
         });
       }
     } on PlatformException catch (_) {
-      customSnackBar('Failed to load Image');
+      customSnackBar(AppStrings.failedToLoadImage);
     }
   }
 
@@ -73,7 +72,7 @@ class _AddCarState extends State<AddCar> {
             ),
             ListTile(
               leading: const Icon(Icons.image),
-              title: const Text('Gallery'),
+              title: const Text(AppStrings.gallery),
               onTap: () {
                 Get.back();
                 pickImage(ImageSource.gallery);
@@ -183,7 +182,7 @@ class _AddCarState extends State<AddCar> {
                       addCarController.addCar(image!.path);
                     }
                     if (image == null) {
-                      customSnackBar('Add Car Image');
+                      customSnackBar(AppStrings.addCarImage);  
                     }
                   },
                 ),

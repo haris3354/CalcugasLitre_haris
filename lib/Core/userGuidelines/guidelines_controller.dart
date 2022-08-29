@@ -27,7 +27,6 @@ class ContentController extends GetxController {
       debugPrint(response.statusCode.toString());
       var obj = UserGuideLinesModel.fromJson(body);
       data = obj.message!;
-      debugPrint('Content: ${data?[0].content}');
       update();
       isLoading(true);
     } else {

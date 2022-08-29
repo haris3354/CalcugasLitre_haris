@@ -63,7 +63,7 @@ class VerifyOtpController extends GetxController {
             await ApiService.post(NetworkStrings.verifyOtpEndpoint, data);
         print(response.body);
         var body = jsonDecode(response.body);
-        if (response.statusCode == 200) {
+        if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
           var obj = VerifyOtpResponseModel.fromJson(body);
           if (isForget == true) {
             stopLoading();

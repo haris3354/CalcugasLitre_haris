@@ -32,7 +32,7 @@ class FuelController extends GetxController {
 
   void addFuel(String carId) async {
     final isValid = addFuelFormKey.currentState!.validate();
-    debugPrint('form Not Valid');
+
     if (!isValid) {
       return;
     } else {
@@ -45,21 +45,17 @@ class FuelController extends GetxController {
         data['fuelPrice'] = fuelprice;
         data['fuelQuantity'] = fuelQuantity;
         data["carId"] = carId;
-        debugPrint('car Id : $carId');
         var response = await ApiService.postWithHeader(
             NetworkStrings.addFuelEndPoint, data);
         var body = jsonDecode(response.body);
-        if (response.statusCode == 200) {
+        if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
           stopLoading();
-          debugPrint(response.statusCode.toString());
           Get.offAll(const Home());
           customSnackBar(body['message']);
           fuelPriceController.clear();
           fuelQuantityController.clear();
         } else {
-          debugPrint('Failed${response.statusCode}');
           stopLoading();
-          //   customSnackBar(body['message']);
         }
       } else {
         stopLoading();

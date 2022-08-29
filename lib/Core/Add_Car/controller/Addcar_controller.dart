@@ -45,10 +45,10 @@ class AddCarController extends GetxController {
   void addCar(String? imagePath) async {
     final isValid = addCarFormKey.currentState!.validate();
     if (!isValid) {
-      print('form Not Valid');
+    
       return;
     } else {
-      print('Form Validate');
+    
       addCarFormKey.currentState!.save();
       showLoading();
       ConnectivityManager? connectivityManager = ConnectivityManager();

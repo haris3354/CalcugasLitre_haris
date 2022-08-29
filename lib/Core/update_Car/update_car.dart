@@ -1,7 +1,6 @@
 // ignore_for_file: must_be_immutable, body_might_complete_normally_nullable, unused_local_variable
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:calcugasliter/Core/Add_Car/controller/Addcar_controller.dart';
 import 'package:calcugasliter/Core/Add_Car/controller/updateCar_controller.dart';
 import 'package:calcugasliter/Core/AllCars/model/allcars_model.dart';
 import 'package:calcugasliter/Core/home/widgets/custom_drawer.dart';
@@ -181,7 +180,7 @@ class _UpdateCarState extends State<UpdateCar> {
                 SizedBox(height: 14.h),
                 SimpleButton(
                   button_color: AppColors.blackColor,
-                  button_label: 'Edit Car',
+                  button_label: AppStrings.editCar,
                   onButtonPressed: () {
                     updateCarController.updateCar(
                         image?.path, widget.carDetails.id!);

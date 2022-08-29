@@ -67,28 +67,26 @@ class _EditProfileState extends State<EditProfile> {
     var request = http.MultipartRequest('POST', uri);
     request.headers.addAll(header);
     request.fields['full_name'] = val;
-    log.e(val);
     if (image != null) {
       var multipart = http.MultipartFile.fromPath('image', image!.path);
       request.files.add(await multipart);
     }
     var streamResponse = await request.send();
     var response = await http.Response.fromStream(streamResponse);
-    if (response.statusCode == 200) {
+    if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
       box.write('name', val);
-
       stopLoading();
       if (box.read('isSocial') == false) {
         var obj = LoginResponseModel.fromJson(jsonDecode(response.body));
         editcontroller.setFields(
             obj.user?.fullName, obj.user?.image, obj.user?.userEmail);
         box.write('image', obj.user?.image);
-        customSnackBar('Profile Updated successfully');
+        customSnackBar('Profile Updated');
       } else {
         var obj = SocialLoginResponse.fromJson(jsonDecode(response.body));
         editcontroller.setFields(obj.user?.fullName, obj.user?.image, null);
         box.write('image', obj.user?.image);
-        customSnackBar('Profile Updated successfully');
+        customSnackBar('Profile Updated');
       }
     } else {
       customSnackBar('Failed To load image in Server');

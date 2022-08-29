@@ -50,6 +50,7 @@ abstract class AppStrings {
 //--------------------- HOME-------------------------------------------------
 
   static const home = 'Home';
+  static const noCarsAdded = 'No Cars Added';
   static const myCars = 'My Cars';
   static const jarvisAudiQ3 = '''
 Jarvis 
@@ -84,6 +85,7 @@ X3''';
 //--------------------- HISTORY -----------------------//
 
   static const history = 'History';
+  static const noHistory = 'No History';
 
 //--------------------- settings-----------------------//
 
@@ -104,6 +106,9 @@ X3''';
   static const edit = 'Edit';
   static const model = 'Model';
   static const audi8 = 'Audi 8';
+  static const litres = 'Litres';
+  static const date = 'Date';
+  static const price = 'Price';
 
 //-------------------- UPDATE PASSWORD -----------------//
   static const enterOldPassword = 'Enter Old password';
@@ -121,6 +126,7 @@ X3''';
   static const carNumber = 'Car Number';
   static const modelNUmber = 'Model number';
   static const uploadPicture = 'Upload Picture';
+  static const addCarImage = 'Add Car Image';
 
 //---------------EDIT PROFILE--------------
   static const johnSmiith = 'John Smith';
@@ -129,4 +135,14 @@ X3''';
 //-------------------- LOREM -----------------------
   static const lorem =
       'Lorem ipsum dolor sit amet, consecitation ullamcariatur. Excepteur sint occaecat cupidatat non proident';
+
+//-------------------
+  static const areYouSureWantToQuit = 'Are you sure you want to quit?';
+  static const cancel = 'Cancel';
+  static const exit = 'Exit';
+
+//------------- Update Car-------------------------------//
+  static const failedToLoadImage = 'Failed to load image';
+  static const gallery = 'Gallery';
+  static const editCar = 'Edit Car';
 }

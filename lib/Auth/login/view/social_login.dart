@@ -141,7 +141,7 @@ _googleSignUp() async {
           }
           if (obj.user?.image == null) {
             box.write('image',
-                "https://cdn-icons-png.flaticon.com/512/147/147144.png");
+                "https://cdn-icons-png.fla  ticon.com/512/147/147144.png");
           }
           controller.setFields(user?.displayName, obj.user?.image, user?.email);
           customSnackBar("Login SucessFully");

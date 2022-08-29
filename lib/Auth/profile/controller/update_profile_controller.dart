@@ -9,7 +9,7 @@ class updateProfileController extends GetxController {
   late TextEditingController nameController;
   var name = box.read('name');
   var image = box.read('image') == null
-      ? "https://cdn-icons-png.flaticon.com/512/147/147144.png"
+      ? NetworkStrings.defaultAvatar
       : "${NetworkStrings.imageBaseUrl}${box.read('image')}";
   String? email = box.read('email');
   @override
@@ -26,7 +26,7 @@ class updateProfileController extends GetxController {
   void setFields(String? setname, String? imagePath, String? setemail) {
     name = setname!;
     image = imagePath == null
-        ? "https://cdn-icons-png.flaticon.com/512/147/147144.png"
+        ? NetworkStrings.defaultAvatar
         : "${NetworkStrings.imageBaseUrl}$imagePath";
     email = setemail ?? box.read('email');
     update();

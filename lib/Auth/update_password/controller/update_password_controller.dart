@@ -67,7 +67,8 @@ class UpdatePasswordController extends GetxController {
         var response = await ApiService.put(
             NetworkStrings.updatePasswordEndPoint, data, true);
         var body = jsonDecode(response.body);
-        if (response.statusCode == 200 && body["status"] == 1) {
+        if (response.statusCode == NetworkStrings.SUCCESS_CODE &&
+            body["status"] == 1) {
           stopLoading();
           customSnackBar("Password updated Successfully");
           onClose();

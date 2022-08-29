@@ -2,7 +2,6 @@
 import 'package:calcugasliter/Auth/login/model/login_model.dart';
 import 'package:calcugasliter/Auth/profile/controller/update_profile_controller.dart';
 import 'package:calcugasliter/Auth/verify_otp/view/verify_otp.dart';
-
 import 'package:calcugasliter/services/api_service.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
@@ -44,31 +43,21 @@ class LoginController extends GetxController {
   }
 
   void checkLogin() async {
-    print('Email:' + email);
-    print('Password' + password);
-    print("-----Check Login method running-----");
     final isValid = loginFormKey.currentState!.validate();
-    if (!isValid) {
-      print('form not validate');
+    if (!isValid) { 
       return;
     } else {
       ConnectivityManager? _connectivityManager = ConnectivityManager();
-
       if (await _connectivityManager.isInternetConnected()) {
         showLoading();
-        print('Form Validate');
         loginFormKey.currentState!.save();
         final Map<String, dynamic> data = <String, dynamic>{};
         data['user_email'] = email;
         data['user_password'] = password;
-        print(data);
         var response =
             await ApiService.post(NetworkStrings.loginEndpoint, data);
         var dataInJson = jsonDecode(response.body);
-
-        print(response.body);
-        print(data);
-        if ((response.statusCode == 200) && (dataInJson['status'] == 1)) {
+        if ((response.statusCode == NetworkStrings.SUCCESS_CODE) && (dataInJson['status'] == 1)) {
           stopLoading();
           var obj = LoginResponseModel.fromJson(dataInJson);
           id = obj.user?.id;

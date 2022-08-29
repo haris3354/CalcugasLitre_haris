@@ -194,17 +194,17 @@ Widget tableHeader() => Container(
         children: [
           Spacer(flex: 1),
           CustomText(
-            text: 'Price',
+            text: AppStrings.price,
             fontSize: 12.sp,
           ),
           Spacer(flex: 6),
           CustomText(
-            text: 'Litres',
+            text: AppStrings.litres,
             fontSize: 12.sp,
           ),
           Spacer(flex: 7),
           CustomText(
-            text: 'Date',
+            text: AppStrings.date,
             fontSize: 12.sp,
           ),
           Spacer(flex: 7),

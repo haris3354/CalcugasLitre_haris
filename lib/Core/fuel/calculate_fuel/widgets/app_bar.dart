@@ -8,13 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-PreferredSizeWidget? appBar(
-        BuildContext context, String title) =>
-    CustomAppBar(
+PreferredSizeWidget? appBar(BuildContext context, String title) => CustomAppBar(
       title: title,
       trailing: [
         PopupMenuButton<int>(
           color: Colors.white,
+          position: PopupMenuPosition.over,
           onSelected: (item) => onSelected(context, item),
           itemBuilder: (context) => [
             PopupMenuItem<int>(

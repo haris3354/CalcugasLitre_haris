@@ -67,7 +67,7 @@ class _HistoryState extends State<History> {
                             )
                           : Center(
                               child: CustomText(
-                                text: 'No History',
+                                text: AppStrings.noHistory,
                                 fontSize: 20.sp,
                                 color: Colors.white,
                               ),

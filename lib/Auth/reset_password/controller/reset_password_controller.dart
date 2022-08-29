@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print, non_constant_identifier_names
 import 'package:calcugasliter/Auth/Reset_password/model/changePassword_model.dart';
 import 'package:calcugasliter/Auth/login/view/login.dart';
-import 'package:calcugasliter/Auth/signup/model/signup_model.dart';
 import 'package:calcugasliter/services/api_service.dart';
 import 'package:calcugasliter/services/connectivity_manager.dart';
 import 'package:calcugasliter/utils/loader.dart';
@@ -10,8 +9,6 @@ import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:get/get.dart';
-
-import '../../../utils/routes.dart';
 
 dynamic args = Get.arguments;
 
@@ -53,9 +50,8 @@ class ResetPasswordController extends GetxController {
             NetworkStrings.changePasswordEndpoint, data, false);
         print(response.body);
         var body = jsonDecode(response.body);
-        if (response.statusCode == 200) {
+        if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
           stopLoading();
-          var obj = ResetPasswordModel.fromJson(body);
           customSnackBar("Password Changed SucessFully--------");
           Get.to(Login());
         } else {

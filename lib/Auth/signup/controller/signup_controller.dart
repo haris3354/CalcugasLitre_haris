@@ -54,14 +54,12 @@ class SignUpController extends GetxController {
     isSignup = true;
     update();
     final isValid = signupFormKey.currentState!.validate();
-    print('form Not Valid');
     if (!isValid) {
       return;
     } else {
       signupFormKey.currentState!.save();
       showLoading();
       ConnectivityManager? _connectivityManager = ConnectivityManager();
-
       if (await _connectivityManager.isInternetConnected()) {
         print('form Valid');
         final Map<String, dynamic> data = <String, dynamic>{};
@@ -69,7 +67,7 @@ class SignUpController extends GetxController {
         data['user_email'] = email;
         data['user_password'] = password;
         data['confirm_password'] = confirmPassword;
-        print(data);
+
         var response =
             await ApiService.post(NetworkStrings.signupEndpoint, data);
 
@@ -80,7 +78,6 @@ class SignUpController extends GetxController {
           var obj = SignupResponse.fromJson(body);
           customSnackBar("SignUp SucessFully");
           box.write('Token', obj.user.userAuthentication);
-
           Get.to(VerifyOtp(), arguments: [obj.user.id]);
         }
         if (response.statusCode != NetworkStrings.SUCCESS_CREATED_CODE) {
