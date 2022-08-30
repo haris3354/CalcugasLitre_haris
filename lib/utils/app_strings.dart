@@ -12,6 +12,8 @@ abstract class AppStrings {
   static const password = 'Password';
   static const forgotPassword = 'Forgot Password?';
   static const login = 'Login';
+  static const loginSuccessfully = 'Login Successfully';
+  static const emailNotVerified = 'Email Not Verified';
 
   //----------------- SIGNUP ----------------------------------
 
@@ -34,6 +36,7 @@ abstract class AppStrings {
 //------------------- ENTER NEW PASSWORD -----------------------------
 
   static const enterNewPassword = 'Enter New Password';
+  static const passwordChangedSuccesfully = 'Password Changed Successfully';
 
 //------------------- SOCIAL LOGIN -----------------------------
 
@@ -45,22 +48,13 @@ abstract class AppStrings {
 
 //------------------- SUCESSFULLY LOGIN ------------------------------------
 
-  static const loginSucessully = 'LOGIN SUCCESSFULLY';
-
 //--------------------- HOME-------------------------------------------------
 
   static const home = 'Home';
   static const noCarsAdded = 'No Cars Added';
   static const myCars = 'My Cars';
-  static const jarvisAudiQ3 = '''
-Jarvis 
-Audi 
-Q3''';
-
-  static const fridayBMWX3 = '''
-Friday 
-BMW 
-X3''';
+  static const jarvisAudiQ3 = '';
+  static const fridayBMWX3 = '';
 
 //--------------------- ADD FUEL --------------------------------------------//
 
@@ -114,6 +108,8 @@ X3''';
   static const enterOldPassword = 'Enter Old password';
   static const enterNewPAssword = 'Enter New password';
   static const updatePassword2 = 'Update Password';
+  static const passwordUpdatedSuccessfully = 'Password Updated Successfully';
+  static const oldPasswordIsWrong = 'Old Password is Wrong';
 
   //------------------ TERMS AND CONDITIONS-----------//
 
@@ -127,6 +123,10 @@ X3''';
   static const modelNUmber = 'Model number';
   static const uploadPicture = 'Upload Picture';
   static const addCarImage = 'Add Car Image';
+  static const carAdded = 'Car Added';
+
+//------------------------ UPDATE CAR ----------------
+  static const carUpdated = 'Car Updated';
 
 //---------------EDIT PROFILE--------------
   static const johnSmiith = 'John Smith';
@@ -145,4 +145,7 @@ X3''';
   static const failedToLoadImage = 'Failed to load image';
   static const gallery = 'Gallery';
   static const editCar = 'Edit Car';
+  static const somethingWentWrong = 'SomeThing Went Wrong';
+
+  static const noInternetConnection = 'No Internet Connection';
 }

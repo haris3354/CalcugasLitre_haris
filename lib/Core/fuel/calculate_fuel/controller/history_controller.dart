@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:calcugasliter/Core/fuel/calculate_fuel/model/history_model.dart';
 import 'package:calcugasliter/services/api_service.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
@@ -18,18 +19,21 @@ class HistoryController extends GetxController {
   }
 
   void fetchHistory() async {
-    isloading(false);
-    var response = await ApiService.getApi(NetworkStrings.history);
-    var body = jsonDecode(response.body);
-    if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
-      debugPrint(response.statusCode.toString());
-      var obj = HistoryModel.fromJson(body);
-      historyFuels.value = obj.history!;
-      isloading(true);
-    } else {
+    try {
+      isloading(false);
+      var response = await ApiService.getApi(NetworkStrings.history);
+      var body = jsonDecode(response.body);
+      if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+        var obj = HistoryModel.fromJson(body);
+        historyFuels.value = obj.history!;
+        isloading(true);
+      } else {
+        stopLoading();
+        customSnackBar(body['message']);
+      }
+    } catch (_) {
       stopLoading();
-      debugPrint(response.statusCode.toString());
-      customSnackBar(body['message']);
+      customSnackBar(AppStrings.somethingWentWrong);
     }
   }
 }

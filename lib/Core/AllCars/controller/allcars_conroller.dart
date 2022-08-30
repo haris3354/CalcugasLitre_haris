@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:calcugasliter/services/api_service.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
@@ -17,17 +18,22 @@ class AllCarsController extends GetxController {
   }
 
   void fetchCars() async {
-    isloading(false);
-    var response = await ApiService.getApi(NetworkStrings.allCars);
-    var body = jsonDecode(response.body);
-    if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
-      debugPrint(response.statusCode.toString());
-      var obj = AllCarsResponseModel.fromJson(body);
-      carList.value = obj.cars!;
-      isloading(true);
-    } else {
+    try {
+      isloading(false);
+      var response = await ApiService.getApi(NetworkStrings.allCars);
+      var body = jsonDecode(response.body);
+      if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+        debugPrint(response.statusCode.toString());
+        var obj = AllCarsResponseModel.fromJson(body);
+        carList.value = obj.cars!;
+        isloading(true);
+      } else {
+        stopLoading();
+        customSnackBar(body['message']);
+      }
+    } catch (_) {
       stopLoading();
-      customSnackBar(body['message']);
+      customSnackBar(AppStrings.somethingWentWrong);
     }
   }
 }

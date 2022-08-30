@@ -11,6 +11,7 @@ import 'package:calcugasliter/Auth/verify_otp/model/resend_code_model.dart';
 import 'package:calcugasliter/Core/home/view/home.dart';
 import 'package:calcugasliter/screens/splash_screen.dart';
 import 'package:calcugasliter/services/api_service.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
@@ -53,43 +54,47 @@ class VerifyOtpController extends GetxController {
     } else {
       ConnectivityManager? _connectivityManager = ConnectivityManager();
       if (await _connectivityManager.isInternetConnected()) {
-        showLoading();
-        verifyOtpFormKey.currentState!.save();
-        final Map<String, dynamic> data = <String, dynamic>{};
-        data['user_id'] = args[0];
-        data['verificationcode'] = otp;
-        Logger().i(data);
-        var response =
-            await ApiService.post(NetworkStrings.verifyOtpEndpoint, data);
-        print(response.body);
-        var body = jsonDecode(response.body);
-        if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
-          var obj = VerifyOtpResponseModel.fromJson(body);
-          if (isForget == true) {
+        try {
+          showLoading();
+          verifyOtpFormKey.currentState!.save();
+          final Map<String, dynamic> data = <String, dynamic>{};
+          data['user_id'] = args[0];
+          data['verificationcode'] = otp;
+          var response = await ApiService.post(
+              NetworkStrings.verifyOtpEndpoint, data,
+              isHeader: false);
+          var body = jsonDecode(response.body);
+          if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+            var obj = VerifyOtpResponseModel.fromJson(body);
+            if (isForget == true) {
+              stopLoading();
+              isForget = false;
+              customSnackBar(body['message']);
+              Get.off(ResetPassword(), arguments: [args[0]]);
+            } else if (obj.data?.verified == 1) {
+              stopLoading();
+              Get.offAll(Home());
+              box.write('token', obj.data?.userAuthentication);
+              box.write('verified', obj.data?.verified);
+              box.write('id', obj.data?.id);
+              controller.setFields(
+                  obj.data?.fullName, obj.data?.image, obj.data?.userEmail!);
+              box.write('name', obj.data?.fullName);
+              box.write('email', obj.data?.userEmail);
+              box.write('image', obj.data?.image);
+              customSnackBar(body['message']);
+            }
+          } else {
             stopLoading();
-            isForget = false;
-            customSnackBar(body['message']);
-            Get.off(ResetPassword(), arguments: [args[0]]);
-          } else if (obj.data?.verified == 1) {
-            stopLoading();
-            Get.offAll(Home());
-            box.write('token', obj.data?.userAuthentication);
-            box.write('verified', obj.data?.verified);
-            box.write('id', obj.data?.id);
-            controller.setFields(
-                obj.data?.fullName, obj.data?.image, obj.data?.userEmail!);
-            box.write('name', obj.data?.fullName);
-            box.write('email', obj.data?.userEmail);
-            box.write('image', obj.data?.image);
             customSnackBar(body['message']);
           }
-        } else {
+        } catch (_) {
           stopLoading();
-          customSnackBar(body['message']);
+          customSnackBar(AppStrings.somethingWentWrong);
         }
       } else {
         stopLoading();
-        customSnackBar('No Internet Connection');
+        customSnackBar(AppStrings.noInternetConnection);
       }
     }
   }
@@ -116,24 +121,30 @@ class VerifyOtpController extends GetxController {
 //---------------- Resend Otp-----------------------
 
   void resendOtp() async {
-    showLoading();
-    dynamic args = Get.arguments;
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['user_id'] = args[0];
+    try {
+      showLoading();
+      dynamic args = Get.arguments;
+      final Map<String, dynamic> data = <String, dynamic>{};
+      data['user_id'] = args[0];
 
-    print(data);
-    var response =
-        await ApiService.post(NetworkStrings.resendCodeEndpoint, data);
-    print(response.body);
+      print(data);
+      var response = await ApiService.post(
+          NetworkStrings.resendCodeEndpoint, data,
+          isHeader: false);
+      print(response.body);
 
-    var body = jsonDecode(response.body);
-    if (response.statusCode == 200) {
+      var body = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        stopLoading();
+        var obj = ResendCodeModel.fromJson(body);
+        customSnackBar('OTP CODE : ${obj.code}');
+      } else {
+        stopLoading();
+        customSnackBar(body['message']);
+      }
+    } catch (_) {
       stopLoading();
-      var obj = ResendCodeModel.fromJson(body);
-      customSnackBar('OTP CODE : ${obj.code}');
-    } else {
-      stopLoading();
-      customSnackBar(body['message']);
+      customSnackBar(AppStrings.somethingWentWrong);
     }
   }
 }

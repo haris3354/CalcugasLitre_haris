@@ -2,6 +2,8 @@
 import 'package:calcugasliter/Auth/signup/model/signup_model.dart';
 import 'package:calcugasliter/Auth/verify_otp/view/verify_otp.dart';
 import 'package:calcugasliter/services/api_service.dart';
+import 'package:calcugasliter/utils/app_colors.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
@@ -58,35 +60,40 @@ class SignUpController extends GetxController {
       return;
     } else {
       signupFormKey.currentState!.save();
-      showLoading();
       ConnectivityManager? _connectivityManager = ConnectivityManager();
       if (await _connectivityManager.isInternetConnected()) {
-        print('form Valid');
-        final Map<String, dynamic> data = <String, dynamic>{};
-        data['full_name'] = name;
-        data['user_email'] = email;
-        data['user_password'] = password;
-        data['confirm_password'] = confirmPassword;
+        try {
+          showLoading();
 
-        var response =
-            await ApiService.post(NetworkStrings.signupEndpoint, data);
+          print('form Valid');
+          final Map<String, dynamic> data = <String, dynamic>{};
+          data['full_name'] = name;
+          data['user_email'] = email;
+          data['user_password'] = password;
+          data['confirm_password'] = confirmPassword;
 
-        var body = jsonDecode(response.body);
-
-        if (response.statusCode == NetworkStrings.SUCCESS_CREATED_CODE) {
+          var response = await ApiService.post(
+              NetworkStrings.signupEndpoint, data,
+              isHeader: false);
+          var body = jsonDecode(response.body);
+          if (response.statusCode == NetworkStrings.SUCCESS_CREATED_CODE) {
+            stopLoading();
+            var obj = SignupResponse.fromJson(body);
+            customSnackBar("SignUp SucessFully");
+            box.write('Token', obj.user.userAuthentication);
+            Get.to(VerifyOtp(), arguments: [obj.user.id]);
+          }
+          if (response.statusCode != NetworkStrings.SUCCESS_CREATED_CODE) {
+            stopLoading();
+            customSnackBar(body['msg']);
+          }
+        } catch (e) {
           stopLoading();
-          var obj = SignupResponse.fromJson(body);
-          customSnackBar("SignUp SucessFully");
-          box.write('Token', obj.user.userAuthentication);
-          Get.to(VerifyOtp(), arguments: [obj.user.id]);
-        }
-        if (response.statusCode != NetworkStrings.SUCCESS_CREATED_CODE) {
-          stopLoading();
-          customSnackBar(body['msg']);
+          customSnackBar(AppStrings.somethingWentWrong);
         }
       } else {
         stopLoading();
-        customSnackBar('No Internet Connection');
+        customSnackBar(AppStrings.noInternetConnection);
       }
     }
   }

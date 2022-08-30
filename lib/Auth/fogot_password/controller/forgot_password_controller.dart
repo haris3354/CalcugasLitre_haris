@@ -3,6 +3,7 @@ import 'package:calcugasliter/Auth/fogot_password/model/Forgot_password_model.da
 import 'package:calcugasliter/Auth/verify_otp/view/verify_otp.dart';
 import 'package:calcugasliter/services/connectivity_manager.dart';
 import 'package:calcugasliter/services/api_service.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
@@ -39,30 +40,33 @@ class ForgotPasswordController extends GetxController {
     if (!isValid) {
       return;
     } else {
-      showLoading();
       ConnectivityManager? _connectivityManager = ConnectivityManager();
-
       if (await _connectivityManager.isInternetConnected()) {
-        forgotPasswordFormKey.currentState!.save();
-        final Map<String, dynamic> data = <String, dynamic>{};
-        data['user_email'] = email;
-        var response =
-            await ApiService.post(NetworkStrings.forgotPasswordEndpoint, data);
-        var body = jsonDecode(response.body);
-        Logger().i(body);
-        if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+        try {
+          showLoading();
+          forgotPasswordFormKey.currentState!.save();
+          final Map<String, dynamic> data = <String, dynamic>{};
+          data['user_email'] = email;
+          var response = await ApiService.post(
+              NetworkStrings.forgotPasswordEndpoint, data,
+              isHeader: false);
+          var body = jsonDecode(response.body);
+          if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+            stopLoading();
+            var obj = ForgotPasswordResponseModel.fromJson(body);
+            customSnackBar(obj.msg);
+            Get.off(VerifyOtp(), arguments: [obj.userId]);
+          } else {
+            stopLoading();
+            customSnackBar(body['msg']);
+          }
+        } catch (e) {
           stopLoading();
-          var obj = ForgotPasswordResponseModel.fromJson(body);
-          customSnackBar(obj.msg);
-
-          Get.off(VerifyOtp(), arguments: [obj.userId]);
-        } else {
-          stopLoading();
-          customSnackBar(body['msg']);
+          customSnackBar(AppStrings.somethingWentWrong);
         }
       } else {
         stopLoading();
-        customSnackBar('No Internet Connection');
+        customSnackBar(AppStrings.noInternetConnection);
       }
     }
   }

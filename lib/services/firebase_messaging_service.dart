@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
 import 'package:calcugasliter/services/connectivity_manager.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
-import '../utils/network_strings.dart';
+
+
 
 class FirebaseMessagingService {
   static ConnectivityManager? _connectivityManager;
@@ -33,7 +30,7 @@ class FirebaseMessagingService {
     if (await _connectivityManager!.isInternetConnected()) {
       return _firebaseMessaging!.getToken();
     } else {
-      customSnackBar('No Internet Connection');
+      customSnackBar(AppStrings.noInternetConnection);
       return null;
     }
   }

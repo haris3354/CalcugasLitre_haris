@@ -92,7 +92,9 @@ Widget customDrawer(
               ),
             ),
           ),
-          _customDrawerPage(context, AssetPath.home, 'Home', () {}, Colors.red),
+          _customDrawerPage(context, AssetPath.home, 'Home', () {
+            Get.back();
+          }, Colors.red),
           _customDrawerPage(context, AssetPath.calendar, 'Calendar', () {
             Get.back();
             Get.to(const Calendar());

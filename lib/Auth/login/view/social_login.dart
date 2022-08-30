@@ -90,8 +90,8 @@ class _SocialLoginState extends State<SocialLogin> {
 }
 
 _googleSignUp() async {
-  ConnectivityManager? _connectivityManager = ConnectivityManager();
   try {
+    ConnectivityManager? _connectivityManager = ConnectivityManager();
     showLoading();
     if (await _connectivityManager.isInternetConnected()) {
       FirebaseMessagingService firebaseService = FirebaseMessagingService();
@@ -116,14 +116,10 @@ _googleSignUp() async {
         //   "full_name": user.displayName,
       };
       await _googleSignIn.signOut();
-      log.w("Pay-Load : $socialLoginData");
       var response = await ApiService.post(
-          NetworkStrings.socialLoginEndpoint, socialLoginData);
-      log.i("Response Of API : ${response.body}");
+          NetworkStrings.socialLoginEndpoint, socialLoginData,
+          isHeader: false);
       var dataInJson = jsonDecode(response.body);
-      Logger().e(response.statusCode);
-      print('------------------------- Response ${response.statusCode}');
-      print(response.body);
       if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
         stopLoading();
         var obj = SocialLoginResponse.fromJson(dataInJson);
@@ -134,17 +130,13 @@ _googleSignUp() async {
           box.write('name', obj.user?.fullName ?? user?.displayName);
           box.write('email', user?.email);
           if (obj.user?.image != null) {
-            box.write(
-                'image',
-                obj.user?.image ??
-                    "https://cdn-icons-png.flaticon.com/512/147/147144.png");
+            box.write('image', obj.user?.image ?? NetworkStrings.defaultAvatar);
           }
           if (obj.user?.image == null) {
-            box.write('image',
-                "https://cdn-icons-png.fla  ticon.com/512/147/147144.png");
+            box.write('image', NetworkStrings.defaultAvatar);
           }
           controller.setFields(user?.displayName, obj.user?.image, user?.email);
-          customSnackBar("Login SucessFully");
+          customSnackBar(AppStrings.loginSuccessfully);
           isVerified = true;
           log.w(box.read('token'));
           Get.offAll(const Home());
@@ -156,9 +148,9 @@ _googleSignUp() async {
       return user;
     } else {
       stopLoading();
-      customSnackBar('No Internet Connection');
+      customSnackBar(AppStrings.noInternetConnection);
     }
   } catch (e) {
-    customSnackBar(e.toString());
+    customSnackBar(AppStrings.somethingWentWrong);
   }
 }

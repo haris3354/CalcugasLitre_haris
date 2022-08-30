@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:calcugasliter/Auth/login/view/login_method.dart';
+import 'package:calcugasliter/Auth/logout/logout_controller.dart';
 import 'package:calcugasliter/Auth/update_password/view/update_password.dart';
 import 'package:calcugasliter/screens/subscription.dart';
 import 'package:calcugasliter/Core/userGuidelines/views/terms_and_conditions.dart';
@@ -28,6 +29,8 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  var logoutController = Get.put(LogoutController());
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -74,8 +77,7 @@ class _SettingsState extends State<Settings> {
                 button_color: AppColors.blackColor,
                 button_label: AppStrings.logout,
                 onButtonPressed: () {
-                  box.remove('isSocial');
-                  logout();
+                  logoutController.logout();
                 },
               ),
             ],
@@ -86,19 +88,18 @@ class _SettingsState extends State<Settings> {
   }
 }
 
-void logout() async {
-  showLoading();
-  final Map<String, dynamic> data = <String, dynamic>{};
-  var response =
-      await ApiService.postWithHeader(NetworkStrings.logoutEndPoint, null);
-  var body = jsonDecode(response.body);
-  if (response.statusCode == 200) {
-    box.remove('token');
-    box.remove('verified');
-    Logger().i(body);
-    Get.offAll(LoginMethod());
-  } else {
-    stopLoading();
-    customSnackBar(body['message']);
-  }
-}
+// void logout() async {
+//   showLoading();
+//   final Map<String, dynamic> data = <String, dynamic>{};
+//   var response = await ApiService.post(NetworkStrings.logoutEndPoint, null,
+//       isHeader: true);
+//   var body = jsonDecode(response.body);
+//   if (response.statusCode == 200) {
+//     box.remove('token');
+//     box.remove('verified');
+//     Get.offAll(LoginMethod());
+//   } else {
+//     stopLoading();
+//     customSnackBar(body['message']);
+//   }
+// }

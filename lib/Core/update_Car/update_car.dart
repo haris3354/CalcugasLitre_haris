@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable, body_might_complete_normally_nullable, unused_local_variable
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:calcugasliter/Core/Add_Car/controller/updateCar_controller.dart';
+import 'package:calcugasliter/Core/update_Car/updateCar_controller.dart';
 import 'package:calcugasliter/Core/AllCars/model/allcars_model.dart';
 import 'package:calcugasliter/Core/home/widgets/custom_drawer.dart';
 import 'package:calcugasliter/utils/app_colors.dart';

@@ -4,6 +4,7 @@ import 'package:calcugasliter/Auth/verify_otp/view/verify_otp.dart';
 import 'package:calcugasliter/Core/home/view/home.dart';
 import 'package:calcugasliter/screens/settings.dart';
 import 'package:calcugasliter/services/api_service.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
@@ -56,34 +57,39 @@ class UpdatePasswordController extends GetxController {
     if (!isValid) {
       return;
     } else {
-      showLoading();
       ConnectivityManager? _connectivityManager = ConnectivityManager();
       if (await _connectivityManager.isInternetConnected()) {
-        updatePasswordFormKey.currentState!.save();
-        print('form Valid');
-        final Map<String, dynamic> data = <String, dynamic>{};
-        data['old_password'] = oldpassword;
-        data['new_password'] = confirmPassword;
-        var response = await ApiService.put(
-            NetworkStrings.updatePasswordEndPoint, data, true);
-        var body = jsonDecode(response.body);
-        if (response.statusCode == NetworkStrings.SUCCESS_CODE &&
-            body["status"] == 1) {
+        try {
+          showLoading();
+
+          updatePasswordFormKey.currentState!.save();
+          print('form Valid');
+          final Map<String, dynamic> data = <String, dynamic>{};
+          data['old_password'] = oldpassword;
+          data['new_password'] = confirmPassword;
+          var response = await ApiService.put(
+              NetworkStrings.updatePasswordEndPoint, data, true);
+          var body = jsonDecode(response.body);
+          if (response.statusCode == NetworkStrings.SUCCESS_CODE &&
+              body["status"] == 1) {
+            stopLoading();
+            customSnackBar(AppStrings.passwordUpdatedSuccessfully);
+            onClose();
+            Get.offAll(const Home());
+          } else if (response.statusCode == 400) {
+            stopLoading();
+            customSnackBar(AppStrings.oldPasswordIsWrong);
+          } else {
+            stopLoading();
+            customSnackBar(body['message']);
+          }
+        } catch (_) {
           stopLoading();
-          customSnackBar("Password updated Successfully");
-          onClose();
-          Get.offAll(const Home());
-        } else if (response.statusCode == 400) {
-          print(response.body);
-          stopLoading();
-          customSnackBar('Old password is wrong');
-        } else {
-          stopLoading();
-          customSnackBar(body['message']);
+          customSnackBar(AppStrings.somethingWentWrong);
         }
       } else {
         stopLoading();
-        customSnackBar('No Internet Connection');
+        customSnackBar(AppStrings.noInternetConnection);
       }
     }
   }

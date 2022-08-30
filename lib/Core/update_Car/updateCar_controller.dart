@@ -1,13 +1,14 @@
 // ignore_for_file: avoid_print, non_constant_identifier_names
 import 'package:calcugasliter/Core/AllCars/controller/allcars_conroller.dart';
 import 'package:calcugasliter/Core/home/view/home.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import '../../../services/connectivity_manager.dart';
+import '../../services/connectivity_manager.dart';
 import 'package:http/http.dart' as http;
 
 class UpdateCarController extends GetxController {
@@ -46,41 +47,42 @@ class UpdateCarController extends GetxController {
   void updateCar(String? imagePath, String carId) async {
     final isValid = updateCarFormKey.currentState!.validate();
     if (!isValid) {
-      print('form Not Valid');
       return;
     } else {
-      print('Form Validate');
-      updateCarFormKey.currentState!.save();
-      showLoading();
       ConnectivityManager? connectivityManager = ConnectivityManager();
       if (await connectivityManager.isInternetConnected()) {
-        var token = box.read('token');
-        Map<String, String> header = {"Authorization": 'Bearer $token'};
-        var uri = Uri.parse('${NetworkStrings.apiBaseUrl}updateCar');
-        var request = http.MultipartRequest('PUT', uri);
-        request.headers.addAll(header);
-        request.fields['carName'] = carName;
-        request.fields['carNumber'] = carNumber;
-        request.fields['carModel'] = modelNumber;
-        request.fields['car_id'] = carId;
-        if (imagePath != null) {
-          var multipart = http.MultipartFile.fromPath('carImage', imagePath);
-          request.files.add(await multipart);
-        }
-        var streamResponse = await request.send();
-        var response = await http.Response.fromStream(streamResponse);
-        if (response.statusCode == 200) {
-          stopLoading();
-          allCarsController.fetchCars();
-          Get.offAll(const Home());
-          customSnackBar('Car Updated ');
-        } else {
-          stopLoading();
-          print(response.body);
+        try {
+          updateCarFormKey.currentState!.save();
+          showLoading();
+          var token = box.read('token');
+          Map<String, String> header = {"Authorization": 'Bearer $token'};
+          var uri = Uri.parse('${NetworkStrings.apiBaseUrl}updateCar');
+          var request = http.MultipartRequest('PUT', uri);
+          request.headers.addAll(header);
+          request.fields['carName'] = carName;
+          request.fields['carNumber'] = carNumber;
+          request.fields['carModel'] = modelNumber;
+          request.fields['car_id'] = carId;
+          if (imagePath != null) {
+            var multipart = http.MultipartFile.fromPath('carImage', imagePath);
+            request.files.add(await multipart);
+          }
+          var streamResponse = await request.send();
+          var response = await http.Response.fromStream(streamResponse);
+          if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+            stopLoading();
+            allCarsController.fetchCars();
+            Get.offAll(const Home());
+            customSnackBar(AppStrings.carUpdated);
+          } else {
+            stopLoading();
+          }
+        } catch (_) {
+          customSnackBar(AppStrings.somethingWentWrong);
         }
       } else {
         stopLoading();
-        customSnackBar('No Internet Connection');
+        customSnackBar(AppStrings.noInternetConnection);
       }
     }
   }

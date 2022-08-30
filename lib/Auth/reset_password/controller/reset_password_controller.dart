@@ -1,8 +1,9 @@
 // ignore_for_file: avoid_print, non_constant_identifier_names
-import 'package:calcugasliter/Auth/Reset_password/model/changePassword_model.dart';
+
 import 'package:calcugasliter/Auth/login/view/login.dart';
 import 'package:calcugasliter/services/api_service.dart';
 import 'package:calcugasliter/services/connectivity_manager.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
@@ -14,7 +15,6 @@ dynamic args = Get.arguments;
 
 class ResetPasswordController extends GetxController {
   final GlobalKey<FormState> resetPasswordFormKey = GlobalKey<FormState>();
-
   late TextEditingController passwordController, confirmPasswordController;
 
   var password = '';
@@ -37,30 +37,32 @@ class ResetPasswordController extends GetxController {
     if (!isValid) {
       return;
     } else {
-      resetPasswordFormKey.currentState!.save();
-      showLoading();
-
-      ConnectivityManager? _connectivityManager = ConnectivityManager();
-
-      if (await _connectivityManager.isInternetConnected()) {
-        final Map<String, dynamic> data = <String, dynamic>{};
-        data['user_id'] = args[0];
-        data['new_password'] = password;
-        var response = await ApiService.put(
-            NetworkStrings.changePasswordEndpoint, data, false);
-        print(response.body);
-        var body = jsonDecode(response.body);
-        if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+      ConnectivityManager? connectivityManager = ConnectivityManager();
+      if (await connectivityManager.isInternetConnected()) {
+        try {
+          resetPasswordFormKey.currentState!.save();
+          showLoading();
+          final Map<String, dynamic> data = <String, dynamic>{};
+          data['user_id'] = args[0];
+          data['new_password'] = password;
+          var response = await ApiService.put(
+              NetworkStrings.changePasswordEndpoint, data, false);
+          var body = jsonDecode(response.body);
+          if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+            stopLoading();
+            customSnackBar(AppStrings.passwordChangedSuccesfully);
+            Get.to(Login());
+          } else {
+            stopLoading();
+            customSnackBar(body['message']);
+          }
+        } catch (_) {
           stopLoading();
-          customSnackBar("Password Changed SucessFully--------");
-          Get.to(Login());
-        } else {
-          stopLoading();
-          customSnackBar(body['message']);
+          customSnackBar(AppStrings.somethingWentWrong);
         }
       } else {
         stopLoading();
-        customSnackBar('No Internet Connection');
+        customSnackBar(AppStrings.noInternetConnection);
       }
     }
   }

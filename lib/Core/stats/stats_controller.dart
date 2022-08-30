@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:calcugasliter/Core/stats/stats_model.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:get/get.dart';
 import '../../services/api_service.dart';
 import '../../utils/network_strings.dart';
@@ -42,21 +43,26 @@ class StatsController extends GetxController {
 
   List<ChartData> getChartData() => data;
   Future fetchStats() async {
-    var response = await ApiService.getApi(NetworkStrings.getByMonth);
-    var body = jsonDecode(response.body);
-    if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
-      var obj = StatsModel.fromJson(body);
-      fuels.value = obj.fuel!;
-      for (int i = 0; i < fuels.value.length; i++) {
-        if (max < fuels[i].sum!.toDouble()) {
-          max = fuels[i].sum!.toDouble();
+    try {
+      var response = await ApiService.getApi(NetworkStrings.getByMonth);
+      var body = jsonDecode(response.body);
+      if (response.statusCode == NetworkStrings.SUCCESS_CODE) {
+        var obj = StatsModel.fromJson(body);
+        fuels.value = obj.fuel!;
+        for (int i = 0; i < fuels.value.length; i++) {
+          if (max < fuels[i].sum!.toDouble()) {
+            max = fuels[i].sum!.toDouble();
+          }
+          data.add(ChartData(months[i], fuels[i].sum!.toDouble()));
         }
-        data.add(ChartData(months[i], fuels[i].sum!.toDouble()));
+        isLoading = true;
+        update();
+      } else {
+        customSnackBar(body['message']);
       }
-      isLoading = true;
-      update();
-    } else {
-      customSnackBar(body['message']);
+    } catch (_) {
+        customSnackBar(AppStrings.somethingWentWrong);
+
     }
   }
 }

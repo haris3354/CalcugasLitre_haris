@@ -3,6 +3,7 @@ import 'package:calcugasliter/Auth/login/model/login_model.dart';
 import 'package:calcugasliter/Auth/profile/controller/update_profile_controller.dart';
 import 'package:calcugasliter/Auth/verify_otp/view/verify_otp.dart';
 import 'package:calcugasliter/services/api_service.dart';
+import 'package:calcugasliter/utils/app_strings.dart';
 import 'package:calcugasliter/utils/loader.dart';
 import 'package:calcugasliter/utils/network_strings.dart';
 import 'package:calcugasliter/widgets/Custom_SnackBar.dart';
@@ -44,47 +45,54 @@ class LoginController extends GetxController {
 
   void checkLogin() async {
     final isValid = loginFormKey.currentState!.validate();
-    if (!isValid) { 
+    if (!isValid) {
       return;
     } else {
       ConnectivityManager? _connectivityManager = ConnectivityManager();
       if (await _connectivityManager.isInternetConnected()) {
-        showLoading();
-        loginFormKey.currentState!.save();
-        final Map<String, dynamic> data = <String, dynamic>{};
-        data['user_email'] = email;
-        data['user_password'] = password;
-        var response =
-            await ApiService.post(NetworkStrings.loginEndpoint, data);
-        var dataInJson = jsonDecode(response.body);
-        if ((response.statusCode == NetworkStrings.SUCCESS_CODE) && (dataInJson['status'] == 1)) {
-          stopLoading();
-          var obj = LoginResponseModel.fromJson(dataInJson);
-          id = obj.user?.id;
-          if (obj.user?.verified == 1) {
-            customSnackBar("Login SucessFully");
-            box.write('token', obj.user?.userAuthentication);
-            box.write('verified', obj.user?.verified);
-            box.write('id', obj.user?.id);
-            controller.setFields(
-                obj.user?.fullName, obj.user?.image, obj.user?.userEmail!);
-            box.write('name', obj.user?.fullName);
-            box.write('email', obj.user?.userEmail);
-            box.write('image', obj.user?.image);
-            isVerified = true;
-            Get.offAll(const Home());
+        try {
+          showLoading();
+          loginFormKey.currentState!.save();
+          final Map<String, dynamic> data = <String, dynamic>{};
+          data['user_email'] = email;
+          data['user_password'] = password;
+          var response = await ApiService.post(
+              NetworkStrings.loginEndpoint, data,
+              isHeader: false);
+          var dataInJson = jsonDecode(response.body);
+          if ((response.statusCode == NetworkStrings.SUCCESS_CODE) &&
+              (dataInJson['status'] == 1)) {
+            stopLoading();
+            var obj = LoginResponseModel.fromJson(dataInJson);
+            id = obj.user?.id;
+            if (obj.user?.verified == 1) {
+              customSnackBar(AppStrings.loginSuccessfully);
+              box.write('token', obj.user?.userAuthentication);
+              box.write('verified', obj.user?.verified);
+              box.write('id', obj.user?.id);
+              controller.setFields(
+                  obj.user?.fullName, obj.user?.image, obj.user?.userEmail!);
+              box.write('name', obj.user?.fullName);
+              box.write('email', obj.user?.userEmail);
+              box.write('image', obj.user?.image);
+              isVerified = true;
+              Get.offAll(const Home());
+            } else {
+              customSnackBar(AppStrings.emailNotVerified);
+              Get.off(VerifyOtp(), arguments: [id]);
+              isVerified = false;
+            }
           } else {
-            customSnackBar("Email Not Verified");
-            Get.off(VerifyOtp(), arguments: [id]);
-            isVerified = false;
+            stopLoading();
+            customSnackBar(dataInJson['msg']);
           }
-        } else {
+        } catch (e) {
           stopLoading();
-          customSnackBar(dataInJson['msg']);
+          customSnackBar(AppStrings.somethingWentWrong);
         }
       } else {
         stopLoading();
-        customSnackBar('No Internet Connection');
+        customSnackBar(AppStrings.noInternetConnection);
       }
     }
   }
